@@ -849,7 +849,7 @@ percent.textContent = level + "%";
 
 /* READ BIO BIN */
 function readBioBin(){
-  db.ref("trash_iq/bins/bio_distance").once("value").then(snapshot=>{
+  db.ref("trash_iq/bins/bio_level").once("value").then(snapshot=>{
     const cm = snapshot.val();
     if(cm !== null){
       updateBin(cm, bioFill, bioPercent, bioStatus,"Biodegradable");
@@ -859,7 +859,7 @@ function readBioBin(){
 
 /* READ NONBIO BIN */
 function readNonBioBin(){
-  db.ref("trash_iq/bins/nonbio_distance").once("value").then(snapshot=>{
+  db.ref("trash_iq/bins/nonbio_level").once("value").then(snapshot=>{
     const cm = snapshot.val();
     if(cm !== null){
       updateBin(cm, nonbioFill, nonbioPercent, nonbioStatus,"Non Biodegradable");
