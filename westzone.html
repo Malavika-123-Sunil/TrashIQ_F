@@ -151,7 +151,7 @@ percent.innerText=level+"%";
 
 function readBioBin(){
 
-db.ref("trash_iq/bins/bio_distance").once("value").then(snapshot=>{
+db.ref("trash_iq/bins/bio_level").once("value").then(snapshot=>{
 
 const cm=snapshot.val();
 
@@ -168,7 +168,7 @@ updateBin(cm,bioFill,bioPercent,bioStatus);
 
 function readNonBioBin(){
 
-db.ref("trash_iq/bins/nonbio_distance").once("value").then(snapshot=>{
+db.ref("trash_iq/bins/nonbio_level").once("value").then(snapshot=>{
 
 const cm=snapshot.val();
 
