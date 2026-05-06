@@ -117,19 +117,19 @@ function updateBin(cm,fill,percent,status){
 
 let level=0;
 
-if(cm<10){
+if(cm<5){
 level=90;
 status.innerText="FULL - Collect Now";
 fill.style.background="red";
 }
 
-else if(cm<20){
+else if(cm<9){
 level=60;
 status.innerText="HALF FILLED";
 fill.style.background="orange";
 }
 
-else if(cm<25){
+else if(cm<15){
 level=20;
 status.innerText="LOW";
 fill.style.background="green";
