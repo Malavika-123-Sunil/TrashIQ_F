@@ -806,7 +806,7 @@ function updateBin(cm, fill, percent, status, binName){
 
 let level = 0;
 
-if(cm < 10){
+if(cm < 5){
 
 level = 90;
 status.textContent = "FULL – Collect Now";
@@ -816,7 +816,7 @@ fill.style.background="red";
 triggerBinAlert(binName);
 
 }
-else if(cm < 20){
+else if(cm < 9){
 
 level = 60;
 status.textContent = "HALF FILLED";
@@ -827,7 +827,7 @@ const speech = new SpeechSynthesisUtterance(binName + " bin is half filled.");
 speechSynthesis.speak(speech);
 
 }
-else if(cm < 25){
+else if(cm < 15){
 
 level = 20;
 status.textContent = "LOW LEVEL";
