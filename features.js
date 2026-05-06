@@ -12,7 +12,198 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.feature-modal').forEach(modal => {
     modal.style.display = 'none';
   });
+
+  // Clean and deterministic modal triggers.
+  document.querySelectorAll(".feature-card[data-feature]").forEach((card) => {
+    card.addEventListener("click", () => {
+      const feature = card.dataset.feature;
+      if (feature) {
+        openFeatureModal(feature);
+      }
+    });
+  });
+
+  const generateRouteBtn = document.getElementById("generate-route-btn");
+  if (generateRouteBtn) {
+    generateRouteBtn.addEventListener("click", generateRoute);
+  }
+
+  const routeModalClose = document.getElementById("route-modal-close");
+  if (routeModalClose) {
+    routeModalClose.addEventListener("click", () => closeFeatureModal("route"));
+  }
+
+  const routeModalEl = document.getElementById("modal-route");
+  if (routeModalEl) {
+    routeModalEl.addEventListener("click", (event) => {
+      if (event.target === routeModalEl) {
+        closeFeatureModal("route");
+      }
+    });
+  }
+
+  setupRouteAutocomplete();
 });
+
+// Bounding box around Thodiyoor (lon_min, lat_min, lon_max, lat_max).
+// Wide enough to cover Karunagappally / surrounding Kollam district places.
+const ROUTE_VIEWBOX = "76.30,8.70,76.95,9.45";
+
+// Locations the user has explicitly picked from the autocomplete dropdown.
+// Keyed by the lowercased label so generateRoute() can use the exact lat/lng
+// instead of re-geocoding (which is what caused "Location not found").
+const pickedRouteStops = new Map();
+
+// Live autocomplete for the route input — queries Nominatim, biased around Thodiyoor.
+function setupRouteAutocomplete() {
+  const input = document.getElementById("destination-input");
+  const dropdown = document.getElementById("route-suggestions");
+  if (!input || !dropdown) return;
+
+  let debounceTimer = null;
+  let lastQuery = "";
+  let activeRequest = null;
+
+  // Returns the chunk currently being edited (text after the last comma).
+  function currentChunk() {
+    const value = input.value;
+    const lastComma = value.lastIndexOf(",");
+    return {
+      prefix: lastComma >= 0 ? value.slice(0, lastComma + 1) : "",
+      typing: (lastComma >= 0 ? value.slice(lastComma + 1) : value).trimStart()
+    };
+  }
+
+  function hideDropdown() {
+    dropdown.style.display = "none";
+    dropdown.innerHTML = "";
+  }
+
+  // Build a unique label so two places with the same name (e.g. two "Kayam"s)
+  // don't collide when the user picks them.
+  function buildLabel(item) {
+    const parts = (item.context || "")
+      .split(",")
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .filter((p) => p.toLowerCase() !== item.name.toLowerCase());
+    const distinguisher = parts[0] || parts[1] || "";
+    return distinguisher ? `${item.name}, ${distinguisher}` : item.name;
+  }
+
+  function renderSuggestions(items) {
+    if (!items.length) {
+      hideDropdown();
+      return;
+    }
+    dropdown.innerHTML = "";
+    items.forEach((item) => {
+      const label = buildLabel(item);
+      const row = document.createElement("div");
+      row.style.cssText =
+        "padding:10px 12px; cursor:pointer; border-bottom:1px solid #f3f4f6; font-size:0.9rem; color:#1f2937; display:flex; flex-direction:column; gap:2px;";
+      row.innerHTML = `
+        <span style="font-weight:600;">${escapeHtml(item.name)}</span>
+        <span style="color:#6b7280; font-size:0.78rem;">${escapeHtml(item.context)}</span>
+      `;
+      row.addEventListener("mouseenter", () => (row.style.background = "#f9fafb"));
+      row.addEventListener("mouseleave", () => (row.style.background = "#fff"));
+      // Use mousedown so the click registers before the input's blur hides the dropdown.
+      row.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        const { prefix } = currentChunk();
+        const sep = prefix && !prefix.endsWith(" ") ? " " : "";
+        input.value = `${prefix}${sep}${label}`;
+        // Cache exact coordinates so generateRoute() doesn't have to re-geocode.
+        pickedRouteStops.set(label.toLowerCase(), {
+          label,
+          lat: item.lat,
+          lng: item.lng,
+          displayName: item.displayName
+        });
+        hideDropdown();
+        input.focus();
+      });
+      dropdown.appendChild(row);
+    });
+    dropdown.style.display = "block";
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+  }
+
+  async function fetchSuggestions(query) {
+    if (activeRequest) activeRequest.abort();
+    const controller = new AbortController();
+    activeRequest = controller;
+
+    const url =
+      "https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6" +
+      "&countrycodes=in" +
+      `&viewbox=${ROUTE_VIEWBOX}&q=${encodeURIComponent(query)}`;
+
+    try {
+      const res = await fetch(url, { signal: controller.signal, headers: { Accept: "application/json" } });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data.map((d) => {
+        const a = d.address || {};
+        const main =
+          a.road || a.neighbourhood || a.suburb || a.village || a.town || a.city ||
+          (d.display_name || "").split(",")[0];
+        const ctx = [a.suburb, a.village, a.town, a.city, a.county, a.state]
+          .filter(Boolean)
+          .filter((v, i, arr) => arr.indexOf(v) === i)
+          .slice(0, 3)
+          .join(", ");
+        return {
+          name: main || query,
+          context: ctx || (d.display_name || "").split(",").slice(1, 4).join(",").trim(),
+          lat: parseFloat(d.lat),
+          lng: parseFloat(d.lon),
+          displayName: d.display_name
+        };
+      });
+    } catch (err) {
+      if (err.name === "AbortError") return null;
+      console.error("Autocomplete error:", err);
+      return [];
+    }
+  }
+
+  input.addEventListener("input", () => {
+    const { typing } = currentChunk();
+    clearTimeout(debounceTimer);
+
+    if (typing.length < 2) {
+      hideDropdown();
+      return;
+    }
+
+    debounceTimer = setTimeout(async () => {
+      if (typing === lastQuery) return;
+      lastQuery = typing;
+      const items = await fetchSuggestions(typing);
+      if (items === null) return;
+      renderSuggestions(items);
+    }, 300);
+  });
+
+  input.addEventListener("focus", () => {
+    if (dropdown.children.length) dropdown.style.display = "block";
+  });
+
+  input.addEventListener("blur", () => {
+    setTimeout(hideDropdown, 150);
+  });
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") hideDropdown();
+  });
+}
 
 
 
@@ -29,24 +220,22 @@ speechSynthesis.speak = function(utterance) {
 
 
 function openFeatureModal(feature) {
-
-    // Close all modals first
     document.querySelectorAll('.feature-modal').forEach(modal => {
         modal.classList.remove('active');
         modal.style.display = 'none';
     });
 
-    // Get selected modal
     const modal = document.getElementById(`modal-${feature}`);
-
-    // Safety check
     if (!modal) {
-        console.error("❌ Modal not found:", feature);
+        console.error("Modal not found:", feature);
         return;
     }
 
-    // Open modal
     modal.style.display = 'flex';
+    if (feature === 'route') {
+        modal.style.alignItems = 'flex-start';
+        modal.style.justifyContent = 'center';
+    }
     modal.classList.add('active');
 
     // Prevent page scroll
@@ -64,17 +253,14 @@ function openFeatureModal(feature) {
             break;
 
         case 'route':
-
-            // Delay needed for Leaflet map rendering
             setTimeout(() => {
-
-                initializeRouteMap();
-
-                // Fix map sizing issue
-                if(routeMap){
-                    routeMap.invalidateSize();
+                const mapContainer = document.getElementById('route-map');
+                if (mapContainer && mapContainer.offsetParent !== null) {
+                    initializeRouteMap();
+                    if (routeMap) {
+                        routeMap.invalidateSize();
+                    }
                 }
-
             }, 300);
 
             break;
@@ -114,13 +300,15 @@ function closeFeatureModal(feature) {
     }
 }
   
-  // Close modal when clicking outside
-  window.onclick = function(event) {
-    if (event.target.classList.contains('feature-modal')) {
-      event.target.style.display = 'none';
+  // Close modal when clicking outside (uses listener so it can't override others)
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+    if (target && target.classList && target.classList.contains('feature-modal')) {
+      target.style.display = 'none';
+      target.classList.remove('active');
       document.body.style.overflow = 'auto';
     }
-  }
+  });
   
   // Real-Time Monitoring - Update bin levels based on distance
   function updateBinLevel(distance) {
@@ -485,37 +673,117 @@ function enableVoice() {
   speechSynthesis.speak(msg);
 }
   
-  // Route Optimization - Google Maps
-  
+  // Route Optimization - OpenStreetMap + OSRM
+const THODIYOOR_START = {
+  name: "Thodiyoor Grama Panchayat",
+  lat: 9.07508,
+  lng: 76.57547
+};
+
 let routeMap = null;
+let routeLayer = null;
+let routeMarkers = [];
 
 function initializeRouteMap() {
-
- setTimeout(() => {
-
-        if(routeMap !== null){
-            routeMap.remove();
-        }
-
-        routeMap = L.map('route-map').setView([8.8853, 76.5910], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(routeMap);
-
-        L.marker([8.8853, 76.5910])
-            .addTo(routeMap)
-            .bindPopup("Thodiyoor Panchayat")
-            .openPopup();
-
-        setTimeout(() => {
-            routeMap.invalidateSize();
-        }, 200);
-
-    }, 300);
+  const mapEl = document.getElementById("route-map");
+  if (!mapEl) {
+    console.error("[route] #route-map not found in DOM");
+    return;
   }
-    // Map is embedded via iframe, no additional initialization needed
-    // The iframe URL includes the route from Thodiyoor Panchayat to all bins
+  if (typeof L === "undefined") {
+    console.error("[route] Leaflet (L) is not loaded");
+    return;
+  }
+
+  setTimeout(() => {
+    if (routeMap !== null) {
+      try { routeMap.remove(); } catch (_) { /* noop */ }
+      routeMap = null;
+    }
+
+    routeMap = L.map(mapEl).setView([THODIYOOR_START.lat, THODIYOOR_START.lng], 14);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+      maxZoom: 19
+    }).addTo(routeMap);
+
+    const startMarker = L.marker([THODIYOOR_START.lat, THODIYOOR_START.lng]).addTo(routeMap);
+    startMarker.bindPopup(`<b>Start:</b> ${THODIYOOR_START.name}`).openPopup();
+    routeMarkers.push(startMarker);
+
+    updateRouteInfo(["Start: Thodiyoor Grama Panchayat"], null, null);
+
+    setTimeout(() => {
+      if (routeMap) routeMap.invalidateSize();
+    }, 250);
+  }, 200);
+}
+
+function resetRouteDrawing() {
+  if (routeLayer) {
+    routeMap.removeLayer(routeLayer);
+    routeLayer = null;
+  }
+
+  routeMarkers.forEach((marker) => {
+    if (routeMap && routeMap.hasLayer(marker)) {
+      routeMap.removeLayer(marker);
+    }
+  });
+  routeMarkers = [];
+
+  const startMarker = L.marker([THODIYOOR_START.lat, THODIYOOR_START.lng]).addTo(routeMap);
+  startMarker.bindPopup(`<b>Start:</b> ${THODIYOOR_START.name}`);
+  routeMarkers.push(startMarker);
+}
+
+async function geocodeLocation(query) {
+  // Bias to India + Thodiyoor area so a free-typed name doesn't match a same-named
+  // place in another state. Same parameters as the autocomplete search.
+  const url =
+    "https://nominatim.openstreetmap.org/search?format=json&limit=1" +
+    "&countrycodes=in" +
+    `&viewbox=${ROUTE_VIEWBOX}&q=${encodeURIComponent(query)}`;
+  const response = await fetch(url, {
+    headers: {
+      Accept: "application/json"
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Unable to reach geocoding service.");
+  }
+
+  const data = await response.json();
+  if (!data.length) {
+    return null;
+  }
+
+  return {
+    name: query,
+    lat: parseFloat(data[0].lat),
+    lng: parseFloat(data[0].lon),
+    displayName: data[0].display_name
+  };
+}
+
+function updateRouteInfo(stops, distanceKm, durationMin) {
+  const routeList = document.querySelector("#modal-route .route-list");
+  const routeStats = document.querySelector("#modal-route .route-info p");
+  if (!routeList || !routeStats) {
+    return;
+  }
+
+  routeList.innerHTML = stops.map((stop) => `<li>${stop}</li>`).join("");
+
+  if (distanceKm === null || durationMin === null) {
+    routeStats.innerHTML = "<strong>Estimated Time:</strong> -- | <strong>Distance:</strong> --";
+    return;
+  }
+
+  routeStats.innerHTML = `<strong>Estimated Time:</strong> ${durationMin.toFixed(1)} minutes | <strong>Distance:</strong> ${distanceKm.toFixed(2)} km`;
+}
   
   
 
@@ -813,62 +1081,110 @@ function initializeRouteMap() {
 
 
   async function generateRoute() {
-
-    const destination = document
-        .getElementById("destination-input")
-        .value;
-
-    if (!destination) {
-        alert("Please enter destination");
-        return;
+    if (!routeMap) {
+      initializeRouteMap();
+      return;
     }
 
-    // Thodiyoor Panchayat coordinates
-    const startLat = 8.8853;
-    const startLng = 76.5910;
+    const destinationInput = document.getElementById("destination-input");
+    const rawInput = destinationInput.value.trim();
+    if (!rawInput) {
+      alert("Please enter at least one bin location.");
+      return;
+    }
+
+    const destinationNames = rawInput
+      .split(",")
+      .map((name) => name.trim())
+      .filter(Boolean);
+
+    if (!destinationNames.length) {
+      alert("Please provide valid destination names.");
+      return;
+    }
 
     try {
-
-        // Convert place name to coordinates
-        const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${destination}`
-        );
-
-        const data = await response.json();
-
-        if (data.length === 0) {
-            alert("Location not found");
-            return;
+      // For each comma-separated entry, prefer cached picked coordinates
+      // (from the autocomplete dropdown) so we don't lose accuracy by re-geocoding.
+      const geocodedPoints = [];
+      for (const locationName of destinationNames) {
+        const cached = pickedRouteStops.get(locationName.toLowerCase());
+        if (cached) {
+          geocodedPoints.push({
+            name: cached.label,
+            lat: cached.lat,
+            lng: cached.lng,
+            displayName: cached.displayName
+          });
+          continue;
         }
+        const point = await geocodeLocation(locationName);
+        if (!point) {
+          throw new Error(`Location not found: ${locationName}`);
+        }
+        geocodedPoints.push(point);
+      }
 
-        // Destination coordinates
-        const endLat = parseFloat(data[0].lat);
-        const endLng = parseFloat(data[0].lon);
+      resetRouteDrawing();
 
-        // Destination Marker
-        L.marker([endLat, endLng])
-            .addTo(routeMap)
-            .bindPopup(destination)
-            .openPopup();
+      // OSRM trip endpoint optimizes waypoint order (shortest overall route)
+      const coordinates = [
+        `${THODIYOOR_START.lng},${THODIYOOR_START.lat}`,
+        ...geocodedPoints.map((point) => `${point.lng},${point.lat}`)
+      ];
 
-        // Route Line
-        const routeLine = L.polyline([
-            [startLat, startLng],
-            [endLat, endLng]
-        ], {
-            color: 'green',
-            weight: 5
-        }).addTo(routeMap);
+      const tripUrl =
+        `https://router.project-osrm.org/trip/v1/driving/${coordinates.join(";")}` +
+        "?source=first&roundtrip=false&overview=full&geometries=geojson&steps=true";
 
-        // Zoom map to fit route
-        routeMap.fitBounds(routeLine.getBounds());
+      const tripResponse = await fetch(tripUrl);
+      const tripData = await tripResponse.json();
 
+      if (!tripResponse.ok || tripData.code !== "Ok" || !tripData.trips?.length) {
+        throw new Error("Could not calculate route. Try nearby or more specific locations.");
+      }
+
+      const trip = tripData.trips[0];
+      const waypoints = tripData.waypoints || [];
+
+      const latLngPath = trip.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+      routeLayer = L.polyline(latLngPath, {
+        color: "#10b981",
+        weight: 6,
+        opacity: 0.9
+      }).addTo(routeMap);
+
+      const orderedStops = ["Start: Thodiyoor Grama Panchayat"];
+      waypoints
+        .sort((a, b) => a.waypoint_index - b.waypoint_index)
+        .forEach((wp) => {
+          if (wp.waypoint_index === 0) {
+            return;
+          }
+
+          // Use the original geocoded coords (what the user actually picked),
+          // not OSRM's road-snapped wp.location which can drift away from the place.
+          const idx = (wp.original_index ?? 1) - 1;
+          const original = geocodedPoints[idx];
+          const stopName = destinationNames[idx] || `Stop ${wp.waypoint_index}`;
+          const markerLatLng = original
+            ? [original.lat, original.lng]
+            : [wp.location[1], wp.location[0]];
+          const marker = L.marker(markerLatLng).addTo(routeMap);
+          marker.bindPopup(`<b>Stop ${wp.waypoint_index}:</b> ${stopName}`);
+          routeMarkers.push(marker);
+          orderedStops.push(`Stop ${wp.waypoint_index}: ${stopName}`);
+        });
+
+      const distanceKm = trip.distance / 1000;
+      const durationMin = trip.duration / 60;
+      updateRouteInfo(orderedStops, distanceKm, durationMin);
+      routeMap.fitBounds(routeLayer.getBounds(), { padding: [30, 30] });
     } catch (error) {
-
-        console.error(error);
-        alert("Error generating route");
-
+      console.error(error);
+      alert(error.message || "Error generating optimized route.");
     }
-}
+  }
 window.openFeatureModal = openFeatureModal;
 window.closeFeatureModal = closeFeatureModal;
+window.generateRoute = generateRoute;

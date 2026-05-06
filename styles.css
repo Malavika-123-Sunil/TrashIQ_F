@@ -886,9 +886,10 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    margin: 4rem 0;
-    padding: 2rem 0;
+    margin: 4rem auto;
+    padding: 2rem;
     width: 100%;
+    max-width: 1200px;
     box-sizing: border-box;
 }
 
@@ -966,6 +967,9 @@ body {
     line-height: 1.6;
 }
 
+/* Ensure the card itself receives click events consistently */
+/* Removed pointer-events:none on children - was blocking interactions */
+
 /* Update body font to Inter */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -986,6 +990,8 @@ body {
     padding: 3rem 0;
     width: 100%;
     box-sizing: border-box;
+    display: flex;
+    justify-content: center;
 }
 
 /* Ensure container is responsive */
@@ -1594,13 +1600,24 @@ body {
     max-width: 100%;
 }
 
-/* Prevent horizontal overflow */
-#features .container {
+/* Final layout override: keep features section centered */
+#features {
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 3rem 2rem;
+    width: 100%;
     overflow-x: hidden;
 }
 
 .features-grid {
     overflow-x: hidden;
+}
+
+#features .features-grid {
+    width: 100%;
+    max-width: none;
+    margin: 0 auto;
+    padding: 2rem 0;
 }
 
 /* Feature Modals */
