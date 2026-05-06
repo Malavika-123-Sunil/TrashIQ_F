@@ -839,10 +839,10 @@ function updateRouteInfo(stops, distanceKm, durationMin) {
           { id: 'Bin-03', location: 'Bus Stop', level: 85, time: 'Daily', status: 'Regular' }
         ],
         summary: {
-          total: 93,
-          avgLevel: 78.3,
-          efficiency: 97,
-          waste: '13,950 kg'
+          total: 21,
+          avgLevel: 81,
+          efficiency: 98,
+          waste: '3,150 kg'
         }
       }
     };
