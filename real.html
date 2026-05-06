@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TrashIQ | East Zone Monitoring</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<style>
+
+body{
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+color:#333;
+text-align:center;
+padding:40px;
+}
+
+h1{
+margin-bottom:30px;
+}
+
+.container{
+display:flex;
+gap:30px;
+justify-content:center;
+}
+
+.bin{
+background:white;
+box-shadow:0 8px 32px rgba(0,0,0,0.12);
+border-radius:16px;
+padding:25px;
+width:250px;
+}
+
+.meter{
+height:15px;
+background:#e5e7eb;
+border-radius:20px;
+overflow:hidden;
+margin:10px 0;
+}
+
+.fill{
+height:100%;
+width:0%;
+background:#22c55e;
+transition:0.5s;
+}
+
+.status{
+margin-top:10px;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>East Zone - Real Time Monitoring</h1>
+
+<div class="container">
+
+<div class="bin">
+<h3>Biodegradable Bin</h3>
+<div class="meter">
+<div id="bio_fill" class="fill"></div>
+</div>
+<p id="bio_percent">--%</p>
+<p id="bio_status">Waiting for sensor data...</p>
+</div>
+
+<div class="bin">
+<h3>Non Biodegradable Bin</h3>
+<div class="meter">
+<div id="nonbio_fill" class="fill"></div>
+</div>
+<p id="nonbio_percent">--%</p>
+<p id="nonbio_status">Waiting for sensor data...</p>
+</div>
+
+</div>
+
+
+<script>
+
+/* FIREBASE CONFIG */
+
+firebase.initializeApp({
+apiKey: "AIzaSyBc7Dleud_41G6B1PKOJIHUmrNHIAldNKA",
+databaseURL: "https://trash-iq-default-rtdb.firebaseio.com/",
+projectId: "trash-iq"
+});
+
+const db = firebase.database();
+
+
+/* ELEMENTS */
+
+const bioFill=document.getElementById("bio_fill");
+const bioPercent=document.getElementById("bio_percent");
+const bioStatus=document.getElementById("bio_status");
+
+const nonbioFill=document.getElementById("nonbio_fill");
+const nonbioPercent=document.getElementById("nonbio_percent");
+const nonbioStatus=document.getElementById("nonbio_status");
+
+
+/* UPDATE BIN UI */
+
+function updateBin(cm,fill,percent,status){
+
+let level=0;
+
+if(cm<10){
+level=90;
+status.innerText="FULL - Collect Now";
+fill.style.background="red";
+}
+
+else if(cm<20){
+level=60;
+status.innerText="HALF FILLED";
+fill.style.background="orange";
+}
+
+else if(cm<25){
+level=20;
+status.innerText="LOW";
+fill.style.background="green";
+}
+
+else{
+level=0;
+status.innerText="EMPTY";
+fill.style.background="green";
+}
+
+fill.style.width=level+"%";
+percent.innerText=level+"%";
+
+}
+
+
+/* READ BIO BIN */
+
+function readBioBin(){
+
+db.ref("trash_iq/bins/bio_distance").once("value").then(snapshot=>{
+
+const cm=snapshot.val();
+
+if(cm!=null){
+updateBin(cm,bioFill,bioPercent,bioStatus);
+}
+
+});
+
+}
+
+
+/* READ NON BIO BIN */
+
+function readNonBioBin(){
+
+db.ref("trash_iq/bins/nonbio_distance").once("value").then(snapshot=>{
+
+const cm=snapshot.val();
+
+if(cm!=null){
+updateBin(cm,nonbioFill,nonbioPercent,nonbioStatus);
+}
+
+});
+
+}
+
+
+/* UPDATE EVERY SECOND */
+
+setInterval(()=>{
+
+readBioBin();
+readNonBioBin();
+
+},1000);
+
+
+</script>
+
+</body>
+</html>

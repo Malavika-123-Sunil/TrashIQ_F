@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select Zone | TrashIQ</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <img src="trashiq.jpeg" alt="TrashIQ Logo" class="logo-img" />
+        <span class="logo-text">TrashIQ</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="#zones" class="nav-link">Zones</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb">
+      <div class="breadcrumb-container">
+        <a href="index.html" class="breadcrumb-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+          Home
+        </a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Select Zone</span>
+      </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="header">
+      <div class="panchayat-header">
+        <div class="panchayat-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+        <h1 class="main-title">Select Monitoring Zone</h1>
+        <p class="subtitle">Choose a zone to view real-time waste monitoring data</p>
+        <div class="panchayat-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+          </svg>
+          <span id="panchayat-name">Thodiyoor Panchayat</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zones Section -->
+    <section id="zones" class="container">
+      <div class="zone-grid">
+        <div class="zone-card" onclick="openZone('East Zone')">
+          <div class="zone-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <h3>East Zone</h3>
+          <p>Monitor waste collection in the eastern region</p>
+          <div class="zone-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="zone-card" onclick="openZone('West Zone')">
+          <div class="zone-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <h3>West Zone</h3>
+          <p>Track waste levels in the western region</p>
+          <div class="zone-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="zone-card" onclick="openZone('North Zone')">
+          <div class="zone-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <h3>North Zone</h3>
+          <p>View analytics for the northern region</p>
+          <div class="zone-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div class="zone-card" onclick="openZone('South Zone')">
+          <div class="zone-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <h3>South Zone</h3>
+          <p>Access monitoring data for the southern region</p>
+          <div class="zone-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="index.html" class="footer-link">Home</a>
+        <a href="#zones" class="footer-link">Zones</a>
+      </div>
+      <p class="copyright">&copy; 2026 TrashIQ. All rights reserved.</p>
+      <p class="footer-note">Empowering sustainable waste management through technology</p>
+    </div>
+  </footer>
+
+  <script>
+    // Get panchayat name from localStorage
+    const panchayat = localStorage.getItem("panchayat") || "Thodiyoor";
+    document.getElementById("panchayat-name").textContent = panchayat + " Panchayat";
+
+    
+
+    function openZone(zone) {
+      localStorage.setItem("zone", zone);
+      
+      // Add loading animation to clicked card
+      event.currentTarget.style.transform = "scale(0.95)";
+      event.currentTarget.style.opacity = "0.8";
+      
+      // Show loading state
+      const card = event.currentTarget;
+      const originalContent = card.innerHTML;
+      card.innerHTML = `
+        <div class="zone-icon">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+          </svg>
+        </div>
+        <h3>Loading...</h3>
+        <p>Accessing dashboard</p>
+      `;
+      
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 500);
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Mark active navigation link
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('href') === currentPage || 
+          (currentPage === 'area.html' && link.getAttribute('href') === '#zones')) {
+        link.classList.add('active');
+      }
+    });
+  </script>
+
+  <script>
+function openZone(zone){
+
+  if(zone === "East Zone"){
+      window.location.href = "real.html";
+  }
+
+}
+</script>
+
+</body>
+</html>

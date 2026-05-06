@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrashIQ Dashboard - Waste Management System</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1>TrashIQ Dashboard</h1>
+            <div class="header-nav">
+                <button class="nav-btn active" data-section="daily-report">Daily Report</button>
+                <button class="nav-btn" data-section="smart-analysis">Smart Analysis</button>
+                <button class="nav-btn" data-section="voice-assistance">Voice Assistance</button>
+            </div>
+        </header>
+
+        <!-- Daily Report Section -->
+        <section id="daily-report" class="content-section active">
+            <div class="section-header">
+                <h2>Daily Report</h2>
+                <div class="date-selector-container">
+                    <label for="date-picker">Select Date:</label>
+                    <input type="date" id="date-picker" class="date-picker">
+                    <button id="view-report-btn" class="view-report-btn">View Report</button>
+                </div>
+            </div>
+            
+            <div id="report-content" class="report-content">
+                <div class="report-stats">
+                    <div class="stat-card">
+                        <h3>Total Collections</h3>
+                        <p id="total-collections" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Bins Serviced</h3>
+                        <p id="bins-serviced" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Waste Collected (kg)</h3>
+                        <p id="waste-collected" class="stat-value">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Efficiency %</h3>
+                        <p id="efficiency" class="stat-value">0%</p>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="daily-chart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Smart Analysis Section with Chatbot -->
+        <section id="smart-analysis" class="content-section">
+            <div class="section-header">
+                <h2>Smart Analysis - AI Assistant</h2>
+                <p class="section-subtitle">Ask questions about waste collection and bin status</p>
+            </div>
+            
+            <div class="chatbot-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-message bot-message">
+                        <div class="message-content">
+                            <p>Hello! I'm your AI assistant for waste management. Ask me anything about bin status, collection schedules, or urgent needs. For example: "Which bin needs urgent attention?"</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <div class="input-wrapper">
+                        <textarea id="chat-input" class="chat-input" placeholder="Type your question or use voice input..." rows="1"></textarea>
+                        <button id="voice-input-btn" class="voice-btn" title="Voice Input">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <button id="send-btn" class="send-btn">Send</button>
+                </div>
+                
+                <div class="voice-status" id="voice-status"></div>
+            </div>
+        </section>
+
+        <!-- Voice Assistance Section for Blind Users -->
+        <section id="voice-assistance" class="content-section">
+            <div class="section-header">
+                <h2>Voice Assistance for Waste Disposal</h2>
+                <p class="section-subtitle">Speak to find out which bin to use for your waste</p>
+            </div>
+            
+            <div class="voice-assistance-container">
+                <div class="assistance-info">
+                    <div class="info-card">
+                        <h3>🎤 How It Works</h3>
+                        <ol>
+                            <li>Click the microphone button to start</li>
+                            <li>Tell me what type of waste you have</li>
+                            <li>I'll tell you which bin to use (e.g., "Deposit in the second bin")</li>
+                            <li>Follow the audio instructions</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="bin-guide-card">
+                        <h3>📦 Bin Guide</h3>
+                        <div class="bin-list">
+                            <div class="bin-item">
+                                <span class="bin-number">1</span>
+                                <span class="bin-label">Organic Waste (Food scraps, vegetables, fruits)</span>
+                            </div>
+                            <div class="bin-item">
+                                <span class="bin-number">2</span>
+                                <span class="bin-label">Recyclable Waste (Plastic, paper, metal, glass)</span>
+                            </div>
+                            <div class="bin-item">
+                                <span class="bin-number">3</span>
+                                <span class="bin-label">Hazardous Waste (Batteries, chemicals, e-waste)</span>
+                            </div>
+                            <div class="bin-item">
+                                <span class="bin-number">4</span>
+                                <span class="bin-label">General Waste (Mixed waste, sanitary items)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="voice-assistant-interface">
+                    <div class="assistant-messages" id="assistant-messages">
+                        <div class="assistant-message bot">
+                            <div class="message-bubble">
+                                <p>Hello! I'm your voice assistant for waste disposal. I'll help you find the right bin for your waste.</p>
+                                <p style="margin-top: 10px;">Please tell me what type of waste you have, and I'll guide you to the correct bin.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="assistant-controls">
+                        <button id="assistant-voice-btn" class="assistant-voice-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                            <span>Start Voice Assistant</span>
+                        </button>
+                        <div class="assistant-status" id="assistant-status"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

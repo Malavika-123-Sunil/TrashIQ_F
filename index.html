@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrashIQ | Smart Waste Monitoring System</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <img src="trashiq.jpeg" alt="TrashIQ Logo" class="logo-img" />
+        <span class="logo-text">TrashIQ</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#monitor" class="nav-link">Monitor</a></li>
+        <li><a href="#voice-assistance" class="nav-link">Voice Assistance</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Hero Section -->
+    <section id="home" class="header">
+      <div class="logo-section">
+        <img src="trashiq.jpeg" alt="TrashIQ Logo" class="main-logo" />
+      </div>
+      <h1 class="main-title">Smart Waste Monitoring System</h1>
+      <p class="subtitle">Empowering Panchayats with Real-Time Waste Management Intelligence</p>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="container">
+      <div class="features-grid">
+        <div class="feature-card" onclick="openFeatureModal('monitoring')" style="cursor: pointer;">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+          </div>
+          <h3>Real-Time Monitoring</h3>
+          <p>Track waste bin levels in real-time across all zones with instant updates and alerts.</p>
+        </div>
+        
+        <div class="feature-card" onclick="openFeatureModal('analytics')" style="cursor: pointer;">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <h3>Smart Analytics</h3>
+          <p>Advanced data analytics and insights to optimize collection routes and schedules.</p>
+        </div>
+        
+        <div class="feature-card" onclick="openFeatureModal('alerts')" style="cursor: pointer;">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+          </div>
+          <h3>Automated Alerts</h3>
+          <p>Get notified when bins reach capacity thresholds for proactive waste management.</p>
+        </div>
+        
+        <div class="feature-card" onclick="openFeatureModal('route')" style="cursor: pointer;">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <h3>Route Optimization</h3>
+          <p>AI-powered route suggestions to minimize collection time and maximize efficiency.</p>
+          
+        </div>
+        
+        
+        <div class="feature-card" onclick="openFeatureModal('reports')" style="cursor: pointer;">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <h3>Comprehensive Reports</h3>
+          <p>Generate detailed reports on waste collection patterns and system performance.</p>
+        </div>
+        
+        <div class="feature-card" onclick="openFeatureModal('security')" style="cursor: pointer;">
+          <div class="feature-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </div>
+          <h3>Secure & Reliable</h3>
+          <p>Enterprise-grade security with reliable infrastructure for continuous monitoring.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Selection Section -->
+    <section id="monitor" class="selection-container">
+      <div class="selection-box">
+        <div class="location-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+        <h2 class="selection-title">Start Monitoring</h2>
+        <p class="selection-subtitle">Select your panchayat to access the waste monitoring dashboard</p>
+        
+        <div class="dropdown-group">
+          <div class="dropdown-container">
+            <label for="panchayat">Select Panchayat</label>
+            <select id="panchayat" class="dropdown">
+              <option value="">Select Panchayat</option>
+              <option value="Thodiyoor">Thodiyoor Panchayat</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="button-container">
+          <button id="proceed-btn" class="monitoring-btn" onclick="goToZones()" disabled>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            Proceed to Dashboard
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Voice Assistance Section for Blind Users -->
+    <section id="voice-assistance" class="voice-assistance-section">
+      <div class="container">
+        <div class="voice-assistance-header">
+          <h2>🎤 Voice Assistance for Waste Disposal</h2>
+          <p class="section-subtitle">Speak to find out which bin to use for your waste</p>
+        </div>
+        
+        <div class="voice-assistance-wrapper">
+          <div class="assistance-info">
+            <div class="info-card">
+              <h3>How It Works</h3>
+              <ol>
+                <li>Click the microphone button to start</li>
+                <li>Tell me what type of waste you have</li>
+                <li>See your words appear in real-time as you speak</li>
+                <li>I'll tell you which bin to use (e.g., "Deposit in the second bin")</li>
+                <li>Listen to the audio instructions</li>
+              </ol>
+            </div>
+            
+            <div class="bin-guide-card">
+              <h3>📦 Bin Guide</h3>
+              <div class="bin-list">
+                <div class="bin-item">
+                  <span class="bin-number">1</span>
+                  <span class="bin-label">Organic Waste (Food scraps, vegetables, fruits)</span>
+                </div>
+                <div class="bin-item">
+                  <span class="bin-number">2</span>
+                  <span class="bin-label">Recyclable Waste (Plastic, paper, metal, glass)</span>
+                </div>
+                <div class="bin-item">
+                  <span class="bin-number">3</span>
+                  <span class="bin-label">Hazardous Waste (Batteries, chemicals, e-waste)</span>
+                </div>
+                <div class="bin-item">
+                  <span class="bin-number">4</span>
+                  <span class="bin-label">General Waste (Mixed waste, sanitary items)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="voice-assistant-interface">
+            <div class="assistant-messages" id="assistant-messages">
+              <div class="assistant-message bot">
+                <div class="message-bubble">
+                  <p>Hello! I'm your voice assistant for waste disposal. I'll help you find the right bin for your waste.</p>
+                  <p style="margin-top: 10px;">Click the microphone button below and tell me what type of waste you have. You'll see your words appear as you speak!</p>
+                </div>
+              </div>
+            </div>
+            
+          
+            
+            <!-- Real-time transcription display -->
+            <div class="transcription-display" id="transcription-display" style="display: none;">
+              <div class="transcription-label">You said:</div>
+              <div class="transcription-text" id="transcription-text"></div>
+            </div>
+            
+            <div class="assistant-controls">
+              <button id="assistant-voice-btn" class="assistant-voice-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+                <span>Start Voice Assistant</span>
+              </button>
+              <div class="assistant-status" id="assistant-status"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#home" class="footer-link">Home</a>
+        <a href="#features" class="footer-link">Features</a>
+        <a href="#monitor" class="footer-link">Monitor</a>
+      </div>
+      <p class="copyright">&copy; 2026 TrashIQ. All rights reserved.</p>
+      <p class="footer-note">Empowering sustainable waste management through technology</p>
+    </div>
+  </footer>
+
+  <!-- Feature Modals -->
+  <!-- Real-Time Monitoring Modal -->
+<div id="modal-monitoring" class="feature-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Real-Time Bin Monitoring</h2>
+      
+      <button class="modal-close" onclick="closeFeatureModal('monitoring')">&times;</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="bin-status-display">
+
+        <!-- BIO BIN -->
+        <div class="bin-card">
+          <h4>Biodegradable Bin</h4>
+          <div class="level-indicator">
+            <div class="level-bar" id="bio_fill">
+              <span id="bio_percent">--%</span>
+            </div>
+          </div>
+          <p id="bio_status">Waiting for sensor data...</p>
+        </div>
+
+        <!-- NON BIO BIN -->
+        <div class="bin-card">
+          <h4>Non-Biodegradable Bin</h4>
+          <div class="level-indicator">
+            <div class="level-bar" id="nonbio_fill">
+              <span id="nonbio_percent">--%</span>
+            </div>
+          </div>
+          <p id="nonbio_status">Waiting for sensor data...</p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <!-- Smart Analytics Modal with Chatbot -->
+  <div id="modal-analytics" class="feature-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Smart Analytics & Chatbot</h2>
+        <button class="modal-close" onclick="closeFeatureModal('analytics')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="chatbot-container">
+          <div class="chatbot-messages" id="chatbot-messages">
+            <div class="chat-message bot">
+              <p>Hello! I'm your analytics assistant. How can I help you today?</p>
+            </div>
+          </div>
+          <div class="chatbot-input">
+            <input type="text" id="chat-input" placeholder="Ask about waste collection data..." onkeypress="handleChatEnter(event)">
+            <button onclick="sendChatMessage()">Send</button>
+          </div>
+        </div>
+        <div class="analytics-stats">
+          <div class="stat-item">
+            <h4>Collection Efficiency</h4>
+            <p>85%</p>
+          </div>
+          <div class="stat-item">
+            <h4>Avg Collection Time</h4>
+            <p>2.5 hours</p>
+          </div>
+          <div class="stat-item">
+            <h4>Bins Monitored</h4>
+            <p>24</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Automated Alerts Modal -->
+  <div id="modal-alerts" class="feature-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Automated Alert System</h2>
+        <button class="modal-close" onclick="closeFeatureModal('alerts')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert-controls">
+          <button onclick="testAlert()" class="alert-test-btn">Test Alert</button>
+          <button id="stop-alert-btn" onclick="stopVoice()" class="alert-stop-btn">Stop Alert </button>
+          <button onclick="toggleAlerts()" class="alert-toggle-btn" id="alert-toggle">Enable Alerts</button>
+        </div>
+        <div class="alert-list" id="alert-list">
+          <div class="alert-item">
+            <!-- <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+              <h4>Bin-01 is 88% Full</h4>
+              <p>Street A - Requires immediate attention</p>
+              <span class="alert-time">2 minutes ago</span> 
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Route Optimization Modal -->
+ <!-- Route Optimization Modal -->
+<div id="modal-route" class="feature-modal">
+
+  <div class="modal-content modal-large">
+
+    <div class="modal-header">
+
+      <h2>Route Optimization - Thodiyoor Panchayat</h2>
+
+      <button class="modal-close"
+              onclick="closeFeatureModal('route')">
+        &times;
+      </button>
+       <div id="route-map"></div>
+    </div>
+
+    <div class="modal-body">
+
+      <div style="margin-bottom:20px;">
+
+        <input
+          type="text"
+          id="destination-input"
+          placeholder="Enter destination"
+          style="
+            width:70%;
+            padding:10px;
+            border-radius:8px;
+            border:1px solid #ccc;
+          "
+        >
+
+        <button
+          onclick="generateRoute()"
+          style="
+            padding:10px 20px;
+            background:#10b981;
+            color:white;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+          "
+        >
+          Generate Route
+        </button>
+
+      </div>
+
+      <div id="map-container">
+
+        <div id="route-map"></div>
+
+        <div class="route-info">
+
+          <h4>Optimized Route</h4>
+
+          <ol class="route-list">
+            <li>Start: Thodiyoor Panchayat</li>
+            <li>Bin-01: Street A (Priority: High)</li>
+            <li>Bin-02: Market Road (Priority: Medium)</li>
+            <li>Bin-03: Bus Stop (Priority: High)</li>
+            <li>End: Return to Thodiyoor Panchayat</li>
+          </ol>
+
+          <p>
+            <strong>Estimated Time:</strong> 25 minutes |
+            <strong>Distance:</strong> 10 km
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+        </div>
+       
+      </div>
+    </div>
+  </div>
+
+
+  <!-- <div id="modal-security" class="feature-modal">
+  <div class="modal-content">
+    <h2>Security</h2>
+    <p>Security working</p>
+    <button onclick="closeFeatureModal('security')">Close</button>
+  </div>
+</div> -->
+<!-- Secure & Reliable Modal -->
+  <div id="modal-security" class="feature-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Security & Reliability</h2>
+        <button class="modal-close" onclick="closeFeatureModal('security')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="security-features">
+          <div class="security-item">
+            <div class="security-icon">🔒</div>
+            <h4>Data Encryption</h4>
+            <p>All data transmitted using AES-256 encryption</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">🛡️</div>
+            <h4>Secure Authentication</h4>
+            <p>Multi-factor authentication for authorized access</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">📊</div>
+            <h4>System Uptime</h4>
+            <p>99.9% uptime with redundant servers</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">🔐</div>
+            <h4>Access Control</h4>
+            <p>Role-based access control for different authority levels</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">💾</div>
+            <h4>Data Backup</h4>
+            <p>Automated daily backups with 30-day retention</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">✅</div>
+            <h4>Compliance</h4>
+            <p>ISO 27001 certified security standards</p>
+          </div>
+        </div>
+        <div class="security-status">
+          <h4>System Status</h4>
+          <div class="status-indicator">
+            <span class="status-dot active"></span>
+            <span>All systems operational</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- <div id="modal-security" class="feature-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Security & Reliability</h2>
+      <button class="modal-close" onclick="closeFeatureModal('security')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>This system ensures secure data handling and reliable monitoring of waste bins.</p>
+    </div>
+  </div>
+</div> -->
+
+
+<!-- Route Optimization Modal 
+<div id="modal-route" class="feature-modal">
+  <div class="modal-content modal-large">
+
+    <div class="modal-header">
+      <h2>Route Optimization - Thodiyoor Panchayat</h2>
+      <button class="modal-close" onclick="closeFeatureModal('route')">&times;</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div id="map-container" style="width:100%; height:500px; border-radius:12px; overflow:hidden; margin-bottom:1rem;">
+
+        <iframe
+          width="100%"
+          height="500"
+          style="border:0"
+          loading="lazy"
+          allowfullscreen
+          src="https://www.google.com/maps?q=Thodiyoor+Panchayat+to+Street+A+Thodiyoor+to+Market+Road+Thodiyoor+to+Bus+Stop+Thodiyoor+to+Thodiyoor+Panchayat&output=embed">
+        </iframe>
+
+      </div>
+
+      <div class="route-info">
+        <h4>Optimized Route</h4>
+
+        <ol class="route-list">
+          <li>Start: Thodiyoor Panchayat</li>
+          <li>Bin-01: Street A (Priority: High)</li>
+          <li>Bin-02: Market Road (Priority: Medium)</li>
+          <li>Bin-03: Bus Stop (Priority: High)</li>
+          <li>End: Return to Thodiyoor Panchayat</li>
+        </ol>
+
+        <p><strong>Estimated Time:</strong> 45 minutes | <strong>Distance:</strong> 12.5 km</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+-->
+
+  <!-- Comprehensive Reports Modal -->
+  <div id="modal-reports" class="feature-modal">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h2>Comprehensive Reports</h2>
+        <button class="modal-close" onclick="closeFeatureModal('reports')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="report-tabs">
+          <button class="report-tab active" onclick="showReport('daily')">Daily Report</button>
+          <button class="report-tab" onclick="showReport('weekly')">Weekly Report</button>
+          <button class="report-tab" onclick="showReport('monthly')">Monthly Report</button>
+        </div>
+        <div id="report-content" class="report-content">
+          <div class="report-section">
+            <h3>Daily Collection Report - May 7, 2026</h3>
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Bin ID</th>
+                  <th>Location</th>
+                  <th>Fill Level</th>
+                  <th>Collection Time</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Bin-01</td>
+                  <td>Street A</td>
+                  <td>88%</td>
+                  <td>08:30 AM</td>
+                  <td>Collected</td>
+                </tr>
+                <tr>
+                  <td>Bin-02</td>
+                  <td>Market Road</td>
+                  <td>63%</td>
+                  <td>09:15 AM</td>
+                  <td>Collected</td>
+                </tr>
+                <tr>
+                  <td>Bin-03</td>
+                  <td>Bus Stop</td>
+                  <td>91%</td>
+                  <td>08:45 AM</td>
+                  <td>Collected</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="report-summary">
+              <h4>Summary</h4>
+              <ul>
+                <li>Total Collections: 3 bins</li>
+                <li>Average Fill Level: 80.7%</li>
+                <li>Collection Efficiency: 100%</li>
+                <li>Total Waste Collected: 450 kg</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secure & Reliable Modal -->
+  <div id="modal-security" class="feature-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Security & Reliability</h2>
+        <button class="modal-close" onclick="closeFeatureModal('security')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="security-features">
+          <div class="security-item">
+            <div class="security-icon">🔒</div>
+            <h4>Data Encryption</h4>
+            <p>All data transmitted using AES-256 encryption</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">🛡️</div>
+            <h4>Secure Authentication</h4>
+            <p>Multi-factor authentication for authorized access</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">📊</div>
+            <h4>System Uptime</h4>
+            <p>99.9% uptime with redundant servers</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">🔐</div>
+            <h4>Access Control</h4>
+            <p>Role-based access control for different authority levels</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">💾</div>
+            <h4>Data Backup</h4>
+            <p>Automated daily backups with 30-day retention</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">✅</div>
+            <h4>Compliance</h4>
+            <p>ISO 27001 certified security standards</p>
+          </div>
+        </div>
+        <div class="security-status">
+          <h4>System Status</h4>
+          <div class="status-indicator">
+            <span class="status-dot active"></span>
+            <span>All systems operational</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Enable/disable button based on selection
+    document.getElementById('panchayat').addEventListener('change', function() {
+      const btn = document.getElementById('proceed-btn');
+      if (this.value) {
+        btn.disabled = false;
+      } else {
+        btn.disabled = true;
+      }
+    });
+
+    function goToZones() {
+      const p = document.getElementById("panchayat").value;
+      if (p) {
+        localStorage.setItem("panchayat", p);
+        // Add loading state
+        const btn = document.getElementById('proceed-btn');
+        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Loading...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+          window.location.href = "area.html";
+        }, 500);
+      }
+    }
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Mark active navigation link
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    document.querySelectorAll('.nav-link').forEach(link => {
+      if (link.getAttribute('href') === '#home' || 
+          (currentPage === 'index.html' && link.getAttribute('href').startsWith('#'))) {
+        // Home page - highlight based on scroll position or default to Home
+        if (link.getAttribute('href') === '#home') {
+          link.classList.add('active');
+        }
+      }
+    });
+  </script>
+  
+  <script>
+  // your existing UI script (leave this unchanged)
+</script>
+
+<!-- Firebase Libraries -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<!-- Firebase Bin Monitoring Script -->
+<script>
+
+firebase.initializeApp({
+  apiKey: "AIzaSyBc7Dleud_41G6B1PKOJIHUmrNHIAldNKA",
+  databaseURL: "https://trash-iq-default-rtdb.firebaseio.com/",
+  projectId: "trash-iq"
+});
+
+const db = firebase.database();
+
+/* BIO BIN ELEMENTS */
+const bioFill = document.getElementById("bio_fill");
+const bioPercent = document.getElementById("bio_percent");
+const bioStatus = document.getElementById("bio_status");
+
+/* NONBIO BIN ELEMENTS */
+const nonbioFill = document.getElementById("nonbio_fill");
+const nonbioPercent = document.getElementById("nonbio_percent");
+const nonbioStatus = document.getElementById("nonbio_status");
+
+/* ALERT SOUND */
+const alertSound = new Audio("alert.mp3");
+let alertBeep = new Audio("beep.mp3");
+alertBeep.loop = true;
+
+let alertActive = false;
+
+function triggerBinAlert(binName){
+
+if(alertActive) return;
+
+alertActive = true;
+
+/* Voice warning */
+const speech = new SpeechSynthesisUtterance("Warning. " + binName + " bin is full. Please collect immediately.");
+speech.rate = 0.9;
+speechSynthesis.speak(speech);
+
+/* Start Beeping */
+setTimeout(()=>{
+alertBeep.play();
+},2000);
+
+/* Add alert to modal dynamically */
+const alertList = document.getElementById("alert-list");
+
+const alertHTML = `
+<div class="alert-item">
+<div class="alert-icon">🚨</div>
+<div class="alert-content">
+<h4>${binName} Bin FULL</h4>
+<p>Immediate collection required</p>
+<span class="alert-time">Just now</span>
+</div>
+</div>
+`;
+
+alertList.insertAdjacentHTML("afterbegin", alertHTML);
+
+}
+function stopAlert(){
+
+alertBeep.pause();
+alertBeep.currentTime = 0;
+
+alertActive = false;
+
+speechSynthesis.cancel();
+
+}
+
+document.getElementById("stop-alert-btn").addEventListener("click", stopAlert);
+
+
+/* UPDATE BIN */
+function updateBin(cm, fill, percent, status, binName){
+
+let level = 0;
+
+if(cm < 10){
+
+level = 90;
+status.textContent = "FULL – Collect Now";
+fill.style.background="red";
+
+/* Trigger Full Alert */
+triggerBinAlert(binName);
+
+}
+else if(cm < 20){
+
+level = 60;
+status.textContent = "HALF FILLED";
+fill.style.background="orange";
+
+/* Optional voice alert */
+const speech = new SpeechSynthesisUtterance(binName + " bin is half filled.");
+speechSynthesis.speak(speech);
+
+}
+else if(cm < 25){
+
+level = 20;
+status.textContent = "LOW LEVEL";
+fill.style.background="green";
+
+}
+else{
+
+level = 0;
+status.textContent = "EMPTY";
+fill.style.background="green";
+
+}
+
+fill.style.width = level + "%";
+percent.textContent = level + "%";
+
+}
+
+/* READ BIO BIN */
+function readBioBin(){
+  db.ref("trash_iq/bins/bio_distance").once("value").then(snapshot=>{
+    const cm = snapshot.val();
+    if(cm !== null){
+      updateBin(cm, bioFill, bioPercent, bioStatus,"Biodegradable");
+    }
+  });
+}
+
+/* READ NONBIO BIN */
+function readNonBioBin(){
+  db.ref("trash_iq/bins/nonbio_distance").once("value").then(snapshot=>{
+    const cm = snapshot.val();
+    if(cm !== null){
+      updateBin(cm, nonbioFill, nonbioPercent, nonbioStatus,"Non Biodegradable");
+    }
+  });
+}
+
+/* INITIAL */
+readBioBin();
+readNonBioBin();
+
+/* EVERY SECOND */
+setInterval(()=>{
+  readBioBin();
+  readNonBioBin();
+},1000);
+
+</script>
+
+<script>
+document.querySelectorAll('.feature-card').forEach(card => {
+  card.addEventListener('click', function() {
+    const feature = this.getAttribute('onclick')?.match(/'(.+)'/)?.[1];
+    
+    if (!feature) return;
+
+    const modal = document.getElementById("modal-" + feature);
+
+    if (modal) {
+      modal.style.display = "flex";
+    } else {
+      console.error("Modal missing:", feature);
+    }
+  });
+});
+</script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="features.js"></script>
+  
+
+  
+  
+<!-- <div id="modal-route" class="feature-modal">
+  <div class="modal-content">
+    <h2>Route Optimization</h2>
+    <p>This is Route Optimization content</p>
+    <button onclick="closeFeatureModal('route')">Close</button>
+  </div>
+</div> -->
+
+<div id="modal-reports" class="feature-modal">
+  <div class="modal-content">
+    <h2>Comprehensive Reports</h2>
+    <p>This is Reports content</p>
+    <button onclick="closeFeatureModal('reports')">Close</button>
+  </div>
+</div>
+
+<div id="modal-security" class="feature-modal">
+  <div class="modal-content">
+    <h2>Secure & Reliable</h2>
+    <p>This is Security content</p>
+    <button onclick="closeFeatureModal('security')">Close</button>
+  </div>
+</div>
+
+
+</body>
+</html>
