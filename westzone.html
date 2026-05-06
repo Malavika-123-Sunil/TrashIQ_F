@@ -113,7 +113,7 @@ const nonbioStatus=document.getElementById("nonbio_status");
 
 /* UPDATE BIN UI */
 
-function updateBin(cm,fill,percent,status){
+function updateBin(cm,fill,percent,status,binName){
 
 let level=0;
 
@@ -121,6 +121,8 @@ if(cm<5){
 level=90;
 status.innerText="FULL - Collect Now";
 fill.style.background="red";
+triggerBinAlert(binName);
+
 }
 
 else if(cm<9){
@@ -156,7 +158,7 @@ db.ref("trash_iq/bins/bio_level").once("value").then(snapshot=>{
 const cm=snapshot.val();
 
 if(cm!=null){
-updateBin(cm,bioFill,bioPercent,bioStatus);
+updateBin(cm,bioFill,bioPercent,bioStatus,"Biodegradable");
 }
 
 });
@@ -173,7 +175,7 @@ db.ref("trash_iq/bins/nonbio_level").once("value").then(snapshot=>{
 const cm=snapshot.val();
 
 if(cm!=null){
-updateBin(cm,nonbioFill,nonbioPercent,nonbioStatus);
+updateBin(cm,nonbioFill,nonbioPercent,nonbioStatus,"Non Biodegradable");
 }
 
 });
